@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Search</h2>
+
+<form method="get" action="{{ url_for('search') }}">
+    <label>Search term:</label><br>
+    <input type="text" name="q" value="{{ query }}">
+    <button type="submit">Search</button>
+</form>
+
+<hr>
+
+
+<p>You searched for: {{ query | safe }}</p>
+
+{% if posts|length == 0 %}
+    <p></p>
+{% else %}
+    <ul>
+    {% for post in posts %}
+        <li>
+            <a href="{{ url_for('post_detail', post_id=post.id) }}">
+                {{ post.title }}
+            </a>
+            by {{ post.username }} on {{ post.created_at }}
+        </li>
+    {% endfor %}
+    </ul>
+{% endif %}
+<hr>
+
+<h3>Live Preview (DOM XSS)</h3>
+<div id="preview-box" style="padding: 10px; border: 1px solid #ccc;"></div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    document.getElementById("preview-box").innerHTML = q;
+</script>
+
+{% endblock %}
